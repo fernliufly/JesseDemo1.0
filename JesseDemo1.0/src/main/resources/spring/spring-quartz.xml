@@ -1,0 +1,102 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<bean id="quartzDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="driverClassName" value="${org.quartz.dataSource.qzDS.driver}" />
+		<property name="url" value="${org.quartz.dataSource.qzDS.URL}" />
+		<property name="username" value="${org.quartz.dataSource.qzDS.user}" />
+		<property name="password" value="${org.quartz.dataSource.qzDS.password}" />
+	</bean>
+
+
+	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 <property name="startupDelay" 
+		value="20"/> 这个是必须的，QuartzScheduler 延时启动，应用启动完后 QuartzScheduler 再启动 <property 
+		name="overwriteExistingJobs" value="true"/>这个是可选，QuartzScheduler 启动时更新己存在的Job，这样就不用每次修改targetObject后删除qrtz_job_details表对应记录了 -->
+	<bean id="testQuartzScheduler" lazy-init="false" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="dataSource">
+			<ref bean="quartzDataSource" />
+		</property>
+		<property name="schedulerContextAsMap">
+			<map>
+				<!-- spring 管理的service需要放到这里，才能够注入成功 -->
+				<description>schedulerContextAsMap</description>
+				<entry key="contractFlowOperService" value-ref="contractFlowOperServiceImpl" />
+				<entry key="contractService" value-ref="tradeContractServiceImpl" />
+				<entry key="flowHandlerService" value-ref="iFlowHandlerService" />
+			</map>
+		</property>
+		<property name="applicationContextSchedulerContextKey" value="applicationContext" />
+		<property name="configLocation" value="classpath:config/quartz.properties" />
+		<property name="startupDelay" value="20" />
+		<property name="overwriteExistingJobs" value="true" />
+		<property name="autoStartup" value="true" />
+		<property name="triggers">
+			<list>
+				<!-- <ref bean="testCronTrigger" /> -->
+				<!-- <ref bean="apartmentSyncCronTrigger" /> -->
+				<!-- <ref bean="flowLeftTaskCronTrigger" /> -->
+			</list>
+		</property>
+	</bean>
+
+	<!-- jobdetail -->
+	<!-- <bean id="testJobTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass">
+			<value>com.wu.hourceerp.quartz.TestJob</value>
+		</property>
+		<property name="durability" value="true" />
+	</bean> -->
+	<bean id="apartmentSyncJobTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass">
+			<value>com.wu.hourceerp.quartz.ApartmentContractStatusSyncJob</value>
+		</property>
+		<property name="durability" value="true" />
+	</bean>
+	
+	<!-- trigger -->
+	<!-- <bean id="testCronTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="testJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/20 * * * * ?</value>
+		</property>
+	</bean> -->
+	<bean id="apartmentSyncCronTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="apartmentSyncJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/20 * * * * ?</value>
+		</property>
+	</bean>
+
+	<!-- 流程离职人员的待办任务处理 -->
+	<bean id="flowLeftTaskJobTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass">
+			<value>com.wu.hourceerp.quartz.FlowUpdateLeftTaskJob</value>
+		</property>
+		<property name="durability" value="true" />
+	</bean>
+	<bean id="flowLeftTaskCronTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="flowLeftTaskJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 30 1 * * ?</value>
+		</property>
+	</bean>
+	
+</beans>

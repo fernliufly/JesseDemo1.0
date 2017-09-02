@@ -1,0 +1,14 @@
+[INFO][2017-07-08 19:41:14,998][org.springframework.context.support.ClassPathXmlApplicationContext]Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@53c9f789: startup date [Sat Jul 08 19:41:14 CST 2017]; root of context hierarchy
+[INFO][2017-07-08 19:41:15,050][org.springframework.beans.factory.xml.XmlBeanDefinitionReader]Loading XML bean definitions from class path resource [spring.xml]
+[INFO][2017-07-08 19:41:15,371][org.springframework.jdbc.datasource.DriverManagerDataSource]Loaded JDBC driver: com.mysql.jdbc.Driver
+[WARN][2017-07-08 19:41:15,566][org.springframework.context.support.ClassPathXmlApplicationContext]Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'userService' defined in file [F:\myProject\JesseDemo1.0\target\classes\com\zmt\service\impl\UserServiceImpl.class]: Instantiation of bean failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.zmt.service.impl.UserServiceImpl]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problem: 
+	The import com.zmt.action.ProcessDataAction cannot be resolved
+
+[INFO][2017-07-08 19:42:09,098][org.springframework.context.support.ClassPathXmlApplicationContext]Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@53c9f789: startup date [Sat Jul 08 19:42:09 CST 2017]; root of context hierarchy
+[INFO][2017-07-08 19:42:09,169][org.springframework.beans.factory.xml.XmlBeanDefinitionReader]Loading XML bean definitions from class path resource [spring.xml]
+[INFO][2017-07-08 19:42:09,568][org.springframework.jdbc.datasource.DriverManagerDataSource]Loaded JDBC driver: com.mysql.jdbc.Driver
+[ERROR][2017-07-08 19:42:09,846][com.zmt.TestSpring]iii
+[ERROR][2017-07-08 19:42:09,850][com.zmt.TestSpring]before mapper
+[ERROR][2017-07-08 19:42:09,991][com.zmt.TestSpring]org.apache.ibatis.exceptions.PersistenceException: 
+### Error updating database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get JDBC Connection; nested exception is java.sql.SQLException: Access denied for user 'mybatis'@'localhost' (using password: YES)
+### Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get JDBC Connection; nested exception is java.sql.SQLException: Access denied for user 'mybatis'@'localhost' (using password: YES)
